@@ -8,7 +8,6 @@ def detectar_contorno_placa(imagen_gris, contornos, area_max=50):
     Detecta el contorno de la placa de matrícula en una imagen en escala de grises.
 
     Args:
-        imagen_gris (np.ndarray): Imagen en escala de grises.
         contornos (list): Lista de contornos detectados en la imagen.
         area_max (int, optional): Número máximo de contornos a considerar. Predeterminado es 50.
 
@@ -225,14 +224,16 @@ def mostrar_imagenes(original, preprocesada, final):
     plt.title('Imagen Final con Texto sobrepuesto')
     plt.axis('off')
 
+    plt.show(block=False)
     plt.show()
+    plt.pause(0.1)
 
 def main():
     """
     Función principal para ejecutar el proceso de reconocimiento de placas.
     """
     # Ruta de la imagen
-    ruta_imagen = './images/plate1.jpg'
+    ruta_imagen = './images/placa.png'
 
     # Leer la imagen
     imagen = cv2.imread(ruta_imagen)
