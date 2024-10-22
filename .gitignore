@@ -1,1 +1,5 @@
 .idea
+.DS_Store
+ANPR/.DS_Store
+ANPR/images/.DS_Store
+convolution/__pycache__/

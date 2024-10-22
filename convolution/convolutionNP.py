@@ -94,8 +94,8 @@ def apply_filter(image_path, filter_type):
 # apply_filter('images/house.jpg', 'sobel_x')
 
 # Definición de la ruta de la imagen.
-rutaHouse = r'C:\Users\omarp\OneDrive - Instituto Tecnologico y de Estudios Superiores de Monterrey\Documents\Conv\Computer-Vision\convolution\images\house.jpg'
-rutaPlaca = r'C:\Users\omarp\OneDrive - Instituto Tecnologico y de Estudios Superiores de Monterrey\Documents\Conv\Computer-Vision\convolution\images\placa.png'
+rutaHouse = 'images/house.jpg'
+rutaPlaca = 'images/placa.png'
 
 # Filtro a Aplicar
 filtro = 'laplacian_gaussian'

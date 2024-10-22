@@ -110,8 +110,8 @@ def apply_filter(image_path, filter_type, contrast_enhance=True):
     plt.show()
 
 # Prueba del filtro.
-rutaHouse = r'C:\Users\omarp\OneDrive - Instituto Tecnologico y de Estudios Superiores de Monterrey\Documents\Conv\Computer-Vision\convolution\images\house.jpg'
-rutaPlaca = r'C:\Users\omarp\OneDrive - Instituto Tecnologico y de Estudios Superiores de Monterrey\Documents\Conv\Computer-Vision\convolution\images\placa.png'
+rutaHouse = 'images/house.jpg'
+rutaPlaca = 'images/placa.png'
 
 
 apply_filter(rutaPlaca, 'edge_detection')
