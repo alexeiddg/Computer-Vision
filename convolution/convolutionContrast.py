@@ -115,3 +115,5 @@ rutaPlaca = r'C:\Users\omarp\OneDrive - Instituto Tecnologico y de Estudios Supe
 
 
 apply_filter(rutaPlaca, 'edge_detection')
+
+# Otra prueba de GitHub, ahora desde la terminal de Windows.
