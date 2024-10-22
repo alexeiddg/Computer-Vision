@@ -195,45 +195,51 @@ def sobreponer_texto(imagen, texto, contorno):
 
     return imagen
 
-def mostrar_imagenes(original, preprocesada, final):
+def mostrar_imagenes(original, preprocesada, final, bordes_cropped):
     """
-    Muestra las imágenes original, preprocesada y final utilizando Matplotlib.
+    Muestra las imágenes original, preprocesada, final, y los bordes del recorte utilizando Matplotlib.
 
     Args:
         original (np.ndarray): Imagen original en color con el contorno de la placa.
         preprocesada (np.ndarray): Imagen preprocesada de la placa.
         final (np.ndarray): Imagen final con el texto sobrepuesto.
+        bordes_cropped (np.ndarray): Imagen con los bordes detectados en el recorte.
     """
-    plt.figure(figsize=(18, 6))
+    plt.figure(figsize=(24, 6))
 
-    # Mostrar la imagen original con el contorno de la placa
-    plt.subplot(1, 3, 1)
+    # Imagen original con contorno de la placa
+    plt.subplot(1, 4, 1)
     plt.imshow(cv2.cvtColor(original, cv2.COLOR_BGR2RGB))
-    plt.title('Imagen Original con Contorno de la Placa')
+    plt.title('Imagen Original con Contorno')
     plt.axis('off')
 
-    # Mostrar la imagen preprocesada
-    plt.subplot(1, 3, 2)
+    # Imagen preprocesada
+    plt.subplot(1, 4, 2)
     plt.imshow(preprocesada, cmap='gray')
-    plt.title('Imagen Preprocesada de la Placa')
+    plt.title('Imagen Preprocesada')
     plt.axis('off')
 
-    # Mostrar la imagen final con el texto sobrepuesto
-    plt.subplot(1, 3, 3)
+    # Imagen final con texto sobrepuesto
+    plt.subplot(1, 4, 3)
     plt.imshow(cv2.cvtColor(final, cv2.COLOR_BGR2RGB))
-    plt.title('Imagen Final con Texto sobrepuesto')
+    plt.title('Imagen Final con Texto')
     plt.axis('off')
 
-    plt.show(block=False)
+    # Imagen con bordes detectados en la placa recortada
+    plt.subplot(1, 4, 4)
+    plt.imshow(bordes_cropped, cmap='gray')
+    plt.title('Bordes en Recorte de Placa')
+    plt.axis('off')
+
     plt.show()
-    plt.pause(0.1)
+
 
 def main():
     """
     Función principal para ejecutar el proceso de reconocimiento de placas.
     """
     # Ruta de la imagen
-    ruta_imagen = './images/placa.png'
+    ruta_imagen = './images/placa.jpeg'
 
     # Leer la imagen
     imagen = cv2.imread(ruta_imagen)
@@ -247,13 +253,13 @@ def main():
     # Convertir la imagen a escala de grises
     imagen_gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
 
-    # Aplicar filtro bilateral para reducir el ruido manteniendo los bordes
+    # Aplicar filtro bilateral para reducir ruido manteniendo bordes
     filtro_bilateral = cv2.bilateralFilter(imagen_gris, 11, 17, 17)
 
-    # Detectar bordes utilizando el detector de Canny
+    # Detectar bordes usando Canny
     bordes = cv2.Canny(filtro_bilateral, 30, 200)
 
-    # Encontrar contornos en la imagen con bordes detectados
+    # Encontrar contornos en los bordes detectados
     contornos, _ = cv2.findContours(bordes.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Detectar el contorno de la placa
@@ -262,24 +268,28 @@ def main():
     if contorno_placa is None:
         print("No se encontró el contorno de la placa.")
         return
+
+    # Extraer la región de la placa
+    placa_recortada = extraer_region_placa(imagen, contorno_placa)
+
+    # Detectar bordes en la placa recortada
+    bordes_cropped = cv2.Canny(placa_recortada, 30, 200)
+
+    # Preprocesar la imagen de la placa
+    placa_preprocesada = preprocesar_imagen(placa_recortada)
+
+    # Obtener el texto de la placa con OCR
+    texto_placa = obtener_texto_placa(placa_preprocesada, umbral_confianza=0.5)
+
+    if texto_placa:
+        # Sobreponer el texto en la imagen original
+        imagen_final = sobreponer_texto(imagen_original, texto_placa, contorno_placa)
+
+        # Mostrar todas las imágenes: original, preprocesada, final, y bordes del recorte
+        mostrar_imagenes(imagen_original, placa_preprocesada, imagen_final, bordes_cropped)
     else:
-        # Extraer la región de la placa
-        placa_recortada = extraer_region_placa(imagen, contorno_placa)
+        print("No se pudo detectar el número de la placa.")
 
-        # Preprocesar la imagen de la placa
-        placa_preprocesada = preprocesar_imagen(placa_recortada)
-
-        # Obtener el texto de la placa utilizando OCR
-        texto_placa = obtener_texto_placa(placa_preprocesada, umbral_confianza=0.5)
-
-        if texto_placa:
-            # Sobreponer el texto detectado en la imagen original
-            imagen_final = sobreponer_texto(imagen_original, texto_placa, contorno_placa)
-
-            # Mostrar las imágenes en diferentes etapas del proceso
-            mostrar_imagenes(imagen_original, placa_preprocesada, imagen_final)
-        else:
-            print("No se pudo detectar el número de la placa.")
 
 if __name__ == "__main__":
     main()
